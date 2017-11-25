@@ -50,7 +50,7 @@
                                 <rect key="frame" x="0.0" y="367" width="375" height="300"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="O96-yF-oVK">
-                                        <rect key="frame" x="0.0" y="20" width="375" height="280"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="300"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TestIdent" rowHeight="66" id="fp8-qI-YS7" customClass="ExampleInputTableViewCell" customModule="MasterProject" customModuleProvider="target">
@@ -83,7 +83,7 @@
                                     <constraint firstAttribute="bottom" secondItem="O96-yF-oVK" secondAttribute="bottom" id="7nd-sk-9cD"/>
                                     <constraint firstAttribute="trailing" secondItem="O96-yF-oVK" secondAttribute="trailing" id="7vp-kF-m4O"/>
                                     <constraint firstItem="O96-yF-oVK" firstAttribute="leading" secondItem="Ac4-uV-ZD8" secondAttribute="leading" id="Qoq-ud-057"/>
-                                    <constraint firstItem="O96-yF-oVK" firstAttribute="top" secondItem="Ac4-uV-ZD8" secondAttribute="top" constant="20" id="h9A-cs-hse"/>
+                                    <constraint firstItem="O96-yF-oVK" firstAttribute="top" secondItem="Ac4-uV-ZD8" secondAttribute="top" id="h9A-cs-hse"/>
                                     <constraint firstAttribute="height" constant="300" id="oFq-1K-3De"/>
                                 </constraints>
                             </view>

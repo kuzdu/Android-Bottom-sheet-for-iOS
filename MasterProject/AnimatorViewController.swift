@@ -17,18 +17,54 @@ class AnimatorViewController: UIViewController {
     var contentViewHeightConstraint:NSLayoutConstraint!
     var contentBottomConstraint: NSLayoutConstraint!
     
+    
+    private var headerViewTopConstraint: NSLayoutConstraint!
+    private var uiview2: UIView!
+    
     override func viewWillAppear(_ animated: Bool) {
         addPanToWholeView()
+        initImageView()
         animateHalfUp()
-        
-        
-        let uiview2 = UIView(frame: CGRect(x: 100, y: -100, width: 300, height: 100))
-        uiview2.backgroundColor = UIColor.yellow
-        self.animatorTableView.tableHeaderView = uiview2
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         isDimissed?()
+    }
+    
+    override func viewDidLoad() {
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+    }
+    
+    func initImageView() {
+        
+        
+        print("self.view.frame.height-theConstantHeight \(self.view.frame.height-dynamicHeight)")
+        uiview2 = UIView() //UIView(frame: CGRect(x: 0, y: self.view.frame.height-theConstantHeight, width: self.view.frame.width, height: theConstantHeight))
+        uiview2.backgroundColor = UIColor.yellow
+//        let imageView = UIImageView(frame: CGRect(x: uiview2.frame.minX, y: uiview2.frame.minY, width: uiview2.frame.width, height: uiview2.frame.height))
+//        imageView.image = UIImage(named: "restaurant")
+//        imageView.contentMode = .scaleAspectFill
+//        //imageView.sizeToFit()
+//        imageView.clipsToBounds = true
+//        uiview2.addSubview(imageView)s
+        uiview2.translatesAutoresizingMaskIntoConstraints = false
+        
+        
+        self.view.layoutIfNeeded()
+        self.view.addSubview(uiview2)
+        
+        let trailingConstraint = NSLayoutConstraint(item: uiview2, attribute: .trailing, relatedBy: .equal, toItem: view, attribute: .trailing, multiplier: 1, constant: 0)
+        
+        let leadingConstraint = NSLayoutConstraint(item: uiview2, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1, constant: 0)
+        
+        headerViewTopConstraint = NSLayoutConstraint(item: uiview2, attribute: .topMargin, relatedBy: .equal, toItem: view, attribute: .topMargin, multiplier: 1, constant: 0)
+        
+        let heightConstraint = NSLayoutConstraint(item: uiview2, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: dynamicHeight)
+        
+        view.addConstraints([trailingConstraint, leadingConstraint, headerViewTopConstraint,heightConstraint])
     }
     
     //MARK: VARS
@@ -91,9 +127,7 @@ class AnimatorViewController: UIViewController {
             if isUp && screenHeightIsBiggerThanContentView() {
                 moveDownFromFullScreenSize(y: relativeMovement.y)
             } else if !isUp && isAllowedToMoveViewUp(y: relativeMovement.y) {
-                
-                print("relativeMovement.y \(relativeMovement.y)")
-                self.animatorTableView.tableHeaderView?.frame = CGRect(x: 0, y: -50, width: 0, height: 50)
+                animatorTableView.reloadData()
                 moveUp(y: relativeMovement.y)
             } else if isAllowedToMoveViewDown(y: relativeMovement.y)  {
                 moveDownFromHalfScreenSize(y: relativeMovement.y)
@@ -102,10 +136,7 @@ class AnimatorViewController: UIViewController {
             }
             
         case .cancelled: break
-        //            print("caneled")
         case .ended:
-            //            print("is up is \(isUp)")
-            
             if isUp {
                 if isScreenUpAndUserPanOverOneQuarterScreenSizeDown(y: relativeMovement.y) {
                     animateDown()
@@ -125,7 +156,6 @@ class AnimatorViewController: UIViewController {
                     animateHalfUp()
                 }
             }
-        //            print("ended")
         default:
             break
         }
@@ -193,16 +223,26 @@ class AnimatorViewController: UIViewController {
     private func animateHalfUp() {
         
         print("lastContentOffset \(lastContentOffset)")
-        //tableView.isScrollEnabled = false
+        
         isUp = false
         contentBottomConstraint.constant = 0
-        contentViewHeightConstraint.constant = self.dynamicHeight
+        contentViewHeightConstraint.constant = dynamicHeight
+        
+        let test = self.view.frame.height-dynamicHeight
+        headerViewTopConstraint.constant = test
+        
         animatorTableView.isScrollEnabled = false
         
         
-        UIView.animate(withDuration: 0.3, animations: {
+       
+        UIView.animate(withDuration: 4, animations: {
+            
+//        UIView.animate(withDuration: 0.3, animations: {
             self.view.layoutIfNeeded()
         }) { (_) in
+           
+            self.view.bringSubview(toFront: self.animatorTableView)
+            self.view.sendSubview(toBack: self.uiview2)
             //            self.mapItemContentisDown = false
             //            self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
         }
@@ -210,8 +250,14 @@ class AnimatorViewController: UIViewController {
     private func animateUp() {
         isUp = true
         contentBottomConstraint.constant = 0
-        contentViewHeightConstraint.constant = self.view.frame.height
+//        contentViewHeightConstraint.constant = self.view.frame.height
+        contentViewHeightConstraint.constant = self.view.frame.height - dynamicHeight
         animatorTableView.isScrollEnabled = true
+        animatorTableView.reloadData()
+        
+        
+       // headerViewbottomConstraint.constant = 400
+        headerViewTopConstraint.constant = 0 //emptySpaceInScreen
         
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
