@@ -15,18 +15,8 @@
 		4CFAC2E51FBDE51800A3CA43 /* MasterProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4CFAC2E31FBDE51800A3CA43 /* MasterProject.xcdatamodeld */; };
 		4CFAC2E71FBDE51800A3CA43 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4CFAC2E61FBDE51800A3CA43 /* Assets.xcassets */; };
 		4CFAC2EA1FBDE51800A3CA43 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4CFAC2E81FBDE51800A3CA43 /* LaunchScreen.storyboard */; };
-		4CFAC2FB1FBDE52B00A3CA43 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CFAC2F41FBDE52A00A3CA43 /* Logger.swift */; };
+		A409E81A1FC8C4B400DE16B3 /* ExampleInputTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A409E8191FC8C4B400DE16B3 /* ExampleInputTableViewCell.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		4CFAC2F91FBDE52B00A3CA43 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4CFAC2F51FBDE52A00A3CA43 /* SlaveProject.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 4CFAC2C11FBDE4D300A3CA43;
-			remoteInfo = SlaveProject;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		4C70927E1FBF281B00C01E6C /* AnimatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatorViewController.swift; sourceTree = "<group>"; };
@@ -39,9 +29,7 @@
 		4CFAC2E61FBDE51800A3CA43 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4CFAC2E91FBDE51800A3CA43 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4CFAC2EB1FBDE51800A3CA43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4CFAC2F31FBDE52A00A3CA43 /* SlaveProject-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SlaveProject-Bridging-Header.h"; sourceTree = "<group>"; };
-		4CFAC2F41FBDE52A00A3CA43 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
-		4CFAC2F51FBDE52A00A3CA43 /* SlaveProject.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = SlaveProject.xcodeproj; sourceTree = "<group>"; };
+		A409E8191FC8C4B400DE16B3 /* ExampleInputTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleInputTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +46,6 @@
 		4CFAC2D01FBDE51800A3CA43 = {
 			isa = PBXGroup;
 			children = (
-				4CFAC2F11FBDE52A00A3CA43 /* SlaveProject */,
 				4CFAC2DB1FBDE51800A3CA43 /* MasterProject */,
 				4CFAC2DA1FBDE51800A3CA43 /* Products */,
 			);
@@ -84,35 +71,9 @@
 				4CFAC2E31FBDE51800A3CA43 /* MasterProject.xcdatamodeld */,
 				4C70927E1FBF281B00C01E6C /* AnimatorViewController.swift */,
 				4C7092811FBF31FA00C01E6C /* TestViewController.swift */,
+				A409E8191FC8C4B400DE16B3 /* ExampleInputTableViewCell.swift */,
 			);
 			path = MasterProject;
-			sourceTree = "<group>";
-		};
-		4CFAC2F11FBDE52A00A3CA43 /* SlaveProject */ = {
-			isa = PBXGroup;
-			children = (
-				4CFAC2F21FBDE52A00A3CA43 /* SlaveProject */,
-				4CFAC2F51FBDE52A00A3CA43 /* SlaveProject.xcodeproj */,
-			);
-			name = SlaveProject;
-			path = ../SlaveProject;
-			sourceTree = "<group>";
-		};
-		4CFAC2F21FBDE52A00A3CA43 /* SlaveProject */ = {
-			isa = PBXGroup;
-			children = (
-				4CFAC2F31FBDE52A00A3CA43 /* SlaveProject-Bridging-Header.h */,
-				4CFAC2F41FBDE52A00A3CA43 /* Logger.swift */,
-			);
-			path = SlaveProject;
-			sourceTree = "<group>";
-		};
-		4CFAC2F61FBDE52A00A3CA43 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				4CFAC2FA1FBDE52B00A3CA43 /* libSlaveProject.a */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -162,28 +123,12 @@
 			mainGroup = 4CFAC2D01FBDE51800A3CA43;
 			productRefGroup = 4CFAC2DA1FBDE51800A3CA43 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 4CFAC2F61FBDE52A00A3CA43 /* Products */;
-					ProjectRef = 4CFAC2F51FBDE52A00A3CA43 /* SlaveProject.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				4CFAC2D81FBDE51800A3CA43 /* MasterProject */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		4CFAC2FA1FBDE52B00A3CA43 /* libSlaveProject.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSlaveProject.a;
-			remoteRef = 4CFAC2F91FBDE52B00A3CA43 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		4CFAC2D71FBDE51800A3CA43 /* Resources */ = {
@@ -206,9 +151,9 @@
 				4C70927F1FBF281B00C01E6C /* AnimatorViewController.swift in Sources */,
 				4CFAC2DF1FBDE51800A3CA43 /* ViewController.swift in Sources */,
 				4CFAC2E51FBDE51800A3CA43 /* MasterProject.xcdatamodeld in Sources */,
+				A409E81A1FC8C4B400DE16B3 /* ExampleInputTableViewCell.swift in Sources */,
 				4CFAC2DD1FBDE51800A3CA43 /* AppDelegate.swift in Sources */,
 				4C7092821FBF31FA00C01E6C /* TestViewController.swift in Sources */,
-				4CFAC2FB1FBDE52B00A3CA43 /* Logger.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

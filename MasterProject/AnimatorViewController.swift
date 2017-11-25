@@ -10,31 +10,40 @@ import UIKit
 
 class AnimatorViewController: UIViewController {
     
+    var testVar:CGFloat = 0
     
-    var contentViewHeightConstraint:NSLayoutConstraint!
     var contentView:UIView!
+    var animatorTableView:UITableView!
+    var contentViewHeightConstraint:NSLayoutConstraint!
     var contentBottomConstraint: NSLayoutConstraint!
     
     override func viewWillAppear(_ animated: Bool) {
         addPanToWholeView()
         animateHalfUp()
-     }
+        
+        
+        let uiview2 = UIView(frame: CGRect(x: 100, y: -100, width: 300, height: 100))
+        uiview2.backgroundColor = UIColor.yellow
+        self.animatorTableView.tableHeaderView = uiview2
+    }
     
     override func viewWillDisappear(_ animated: Bool) {
         isDimissed?()
     }
     
-    override func viewDidLoad() {
-     //   initTableView()
-     //   addTableViewCells()
-    }
-    
-    
     //MARK: VARS
     private var isDimissed: (() ->())?
     private var panGestureIsInUse = false
     
-    private var lastContentOffset: CGFloat = 0
+    private var _lastContentOffset: CGFloat = 0
+    private var lastContentOffset: CGFloat {
+        set {
+            _lastContentOffset = newValue
+        } get {
+            return _lastContentOffset
+        }
+    }
+    
     private var dynamicHeight:CGFloat = 280.0
     private var heightOfFuelLevelFilter:CGFloat = 90.0
     
@@ -49,11 +58,11 @@ class AnimatorViewController: UIViewController {
     }
     
     private func controllerNeedPanGesture() -> Bool {
-//        if Model.sharedInstance().isFreeFloatingOnly() && tableView.contentSize.height > (defaultHeight-fuelLevelView.frame.height) {
-//            return true
-//        } else if tableView.contentSize.height > defaultHeight {
-//            return true
-//        }
+        if animatorTableView.contentSize.height > (dynamicHeight-contentView.frame.height) {
+            return true
+        } else if animatorTableView.contentSize.height > dynamicHeight {
+            return true
+        }
         return true
     }
     
@@ -63,6 +72,7 @@ class AnimatorViewController: UIViewController {
     private func addPanToWholeView() {
         let panRec = UIPanGestureRecognizer()
         panRec.addTarget(self, action: #selector(draggedView(_:)))
+        panRec.delegate = self
         contentView.addGestureRecognizer(panRec)
         contentView.isUserInteractionEnabled = true
     }
@@ -72,7 +82,7 @@ class AnimatorViewController: UIViewController {
     @objc func draggedView(_ sender:UIPanGestureRecognizer) {
         
         let relativeMovement = sender.translation(in: self.view)
-        print("relativeMovement.y \(relativeMovement.y)")
+        //print("relativeMovement.y \(relativeMovement.y)")
         switch sender.state {
             
         case .began: break
@@ -81,6 +91,9 @@ class AnimatorViewController: UIViewController {
             if isUp && screenHeightIsBiggerThanContentView() {
                 moveDownFromFullScreenSize(y: relativeMovement.y)
             } else if !isUp && isAllowedToMoveViewUp(y: relativeMovement.y) {
+                
+                print("relativeMovement.y \(relativeMovement.y)")
+                self.animatorTableView.tableHeaderView?.frame = CGRect(x: 0, y: -50, width: 0, height: 50)
                 moveUp(y: relativeMovement.y)
             } else if isAllowedToMoveViewDown(y: relativeMovement.y)  {
                 moveDownFromHalfScreenSize(y: relativeMovement.y)
@@ -179,10 +192,13 @@ class AnimatorViewController: UIViewController {
     //MARK: concret animation actions
     private func animateHalfUp() {
         
+        print("lastContentOffset \(lastContentOffset)")
         //tableView.isScrollEnabled = false
         isUp = false
         contentBottomConstraint.constant = 0
         contentViewHeightConstraint.constant = self.dynamicHeight
+        animatorTableView.isScrollEnabled = false
+        
         
         UIView.animate(withDuration: 0.3, animations: {
             self.view.layoutIfNeeded()
@@ -195,7 +211,7 @@ class AnimatorViewController: UIViewController {
         isUp = true
         contentBottomConstraint.constant = 0
         contentViewHeightConstraint.constant = self.view.frame.height
-        // tableView.isScrollEnabled = true
+        animatorTableView.isScrollEnabled = true
         
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
@@ -206,7 +222,7 @@ class AnimatorViewController: UIViewController {
         isUp = false
         contentViewHeightConstraint.constant = self.dynamicHeight
         contentBottomConstraint.constant = -300
-        //tableView.isScrollEnabled = false
+        animatorTableView.isScrollEnabled = false
         
         UIView.animate(withDuration: 0.3, animations: {
             self.view.layoutIfNeeded()
@@ -214,142 +230,22 @@ class AnimatorViewController: UIViewController {
             self.hideViewController()
         }
     }
-}
-/*
-extension CategoryFilterViewController : UITableViewDelegate, UITableViewDataSource {
-    
     
     func isTableViewScrollingEnabled() -> Bool {
-        return tableView.isScrollEnabled
+        return animatorTableView.isScrollEnabled
     }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categoryCells.count
-    }
-    
-    func sendPiwikTrackEvent(cell: CategoryCell, isSelected: Bool) {
-        
-        guard let id = cell.itemCategory?.categoryId else {
-            return
-        }
-        
-        guard let name = cell.itemCategory?.getName() else {
-            return
-        }
-        
-        if isSelected {
-            Model.sharedInstance().piwikAnalyticsTrackEvent(.UX, action: .MapFilterChanged, label: "show \(id) \(name)", value: Constants.Analytics.number)
-        } else {
-            Model.sharedInstance().piwikAnalyticsTrackEvent(.UX, action: .MapFilterChanged, label: "hide \(id) \(name)", value: Constants.Analytics.number)
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "ImageLabelSwitchTableViewCell") as? ImageLabelSwitchTableViewCell {
-            
-            if indexPath.row < categoryCells.count {
-                
-                if let isSelected = categoryCells[indexPath.row].isSelected {
-                    cell.switchUISwitch.isOn = isSelected
-                    
-                }
-                
-                
-                
-                if  let category = categoryCells[indexPath.row].itemCategory {
-                    
-                    Model.sharedInstance().getImageFromObject(object: category, imageView: cell.imageImageView, placeholder: R.image.ic_item_dummy())
-                    
-                    if let name = category.name {
-                        cell.titleLabel.text = name
-                    }
-                    
-                    var invisible = true
-                    if let remark = self.categoryCells[indexPath.row].itemCategory?.remark {
-                        if let name = self.categoryCells[indexPath.row].itemCategory?.name {
-                            if !name.isEmpty && !remark.isEmpty {
-                                invisible = false
-                            }
-                        }
-                    }
-                    cell.remarkButton.isHidden = invisible
-                    
-                    cell.callbackInfoButton = {
-                        
-                        if let remark = self.categoryCells[indexPath.row].itemCategory?.remark {
-                            if let name = self.categoryCells[indexPath.row].itemCategory?.name {
-                                Model.sharedInstance().showSimpleAlertWithTextNew(name, message: remark)
-                            }
-                        }
-                    }
-                    
-                    
-                    cell.callback = { bool in
-                        
-                        
-                        if indexPath.row < self.categoryCells.count {
-                            self.sendPiwikTrackEvent(cell: self.categoryCells[indexPath.row], isSelected: bool)
-                            self.categoryCells[indexPath.row].isSelected = bool
-                            self.tableView.beginUpdates()
-                            self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
-                            self.tableView.endUpdates()
-                        }
-                        
-                        if let categoryId = category.categoryId {
-                            if bool {
-                                if !Model.sharedInstance().categoryIDsInFilter.contains(categoryId) {
-                                    Model.sharedInstance().categoryIDsInFilter.append(categoryId)
-                                }
-                            } else {
-                                if Model.sharedInstance().categoryIDsInFilter.contains(categoryId) {
-                                    _ = Model.sharedInstance().categoryIDsInFilter.removeObject(categoryId)
-                                }
-                            }
-                            self.refreshMapViewCallback?()
-                            
-                        }
-                    }
-                }
-            }
-            return cell
-        }
-        return UITableViewCell()
-    }
-}*/
+}
 
-/*
-extension CategoryFilterViewController : UIScrollViewDelegate {
+
+extension AnimatorViewController : UIScrollViewDelegate {
     //MARK: POSSIBLE SCROLLVIEW STATES for tableView
     func isTableViewScrollingAllowed() -> Bool {
         return allowTableViewScrolling
     }
     
-    
-    func isTouchingTheTopOfScreen() -> Bool {
-        
-        if filterViewHeightConstraint.constant >= self.view.frame.height {
-            return true
-        }
-        
-        return false
-    }
-    
-    func isScrollingUp(y: CGFloat) -> Bool {
-        if y-lastContentOffset > 0 {
-            return true
-        }
-        return false
-    }
-    
-    
     /** when user scroll really fast, y  (scrollView.contentOffset.y) can be really high. The tableView will bounce out of the screen  */
     func isUserScrollToFast(y: CGFloat) -> Bool {
-        if (filterViewHeightConstraint.constant + (y-lastContentOffset)) < self.view.frame.height {
+        if (contentBottomConstraint.constant + (y-lastContentOffset)) < self.view.frame.height {
             return false
         }
         return true
@@ -359,21 +255,8 @@ extension CategoryFilterViewController : UIScrollViewDelegate {
         if y < 0 || lastContentOffset < 0 {
             return true
         }
-        
         return false
     }
-    
-    
-    //MARK: SCROLL VIEW REACTIONS
-    func moveUpByTableViewScrolling(y: CGFloat) {
-        filterViewHeightConstraint.constant = filterViewHeightConstraint.constant + (y-lastContentOffset)
-    }
-    
-    func moveDownByTableViewScrolling(y: CGFloat) {
-        filterViewHeightConstraint.constant = filterViewHeightConstraint.constant + y
-    }
-    
-    
     
     //MARK: UISCROLLVIEW DELEGATE FUNCTIONS
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -385,52 +268,28 @@ extension CategoryFilterViewController : UIScrollViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if isTableViewScrollingEnabled() && isTableViewScrollingAllowed() {
-            if scrollView.contentOffset.y < 0 || isInTableViewScrolling {
-                
-                if isUp  {
-                    if isScrollingDown(y: scrollView.contentOffset.y) {
-                        lastTableViewScrollingAction = "down"
-                        moveDownByTableViewScrolling(y: scrollView.contentOffset.y)
-                    } else {
-                        if isScrollingUp(y: scrollView.contentOffset.y) && !isTouchingTheTopOfScreen() {
-                            if !isUserScrollToFast(y: scrollView.contentOffset.y) {
-                                lastTableViewScrollingAction = "up"
-                                moveUpByTableViewScrolling(y: scrollView.contentOffset.y)
-                            }
-                        }
-                    }
-                    isInTableViewScrolling = true
-                }
-            }
-        }
-        // update the new position acquired
         self.lastContentOffset = scrollView.contentOffset.y
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         
-        //Das darf nur ausgeführt werden, wenn direkt von oben auf null gescrollt wurde
-        if filterViewHeightConstraint.constant < self.view.frame.height-self.view.frame.height/3 {
-            if lastTableViewScrollingAction == "up" {
-                animateUp()
-            } else {
-                animateDown()
-            }
-        } else if filterViewHeightConstraint.constant < self.view.frame.height-85 {
-            if lastTableViewScrollingAction == "up" {
-                animateUp()
-            } else {
-                animateHalfUp()
-            }
-            
-        } else {
-            animateUp()
+        if scrollView.contentOffset.y < 0 {
+            lastContentOffset = 0
+            animateHalfUp()
         }
         isInTableViewScrolling = false
         lastTableViewScrollingAction = ""
     }
-}*/
+}
+
+extension AnimatorViewController : UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if lastContentOffset <= 0 {
+            return true
+        }
+        return false
+    }
+}
 
 
 
