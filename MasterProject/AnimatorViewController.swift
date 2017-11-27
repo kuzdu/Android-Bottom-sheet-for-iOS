@@ -19,7 +19,7 @@ class AnimatorViewController: UIViewController {
     
     var withImageView = true
     
-    
+    var oldY:CGFloat = 0
     private var headerViewTopConstraint: NSLayoutConstraint!
     private var uiview2: UIView!
     
@@ -80,7 +80,7 @@ class AnimatorViewController: UIViewController {
     
     var dynamicHeight:CGFloat = 280.0
     var imageHeight:CGFloat = 200
-    private var heightOfFuelLevelFilter:CGFloat = 90.0
+   
     
     var isUp = false
     var isUpWithImage = false
@@ -121,7 +121,7 @@ class AnimatorViewController: UIViewController {
     //TODO: moveDownWithImageView und moveUpOverImageView kann evtl. zusammengefasst werden
     func moveDownWithImageView(y: CGFloat) {
         headerViewTopConstraint.constant = y * 2
-        contentViewHeightConstraint.constant = self.view.frame.height - dynamicHeight - y
+        contentViewHeightConstraint.constant = self.view.frame.height - imageHeight - y
     }
     
     /** handle the drag - yeep */
@@ -184,6 +184,7 @@ class AnimatorViewController: UIViewController {
         return y > 0
     }
     
+    
     //MARK: PAN VIEW REACTIONS
     private func moveUp(y: CGFloat) {
         contentViewHeightConstraint.constant = dynamicHeight - y
@@ -191,10 +192,32 @@ class AnimatorViewController: UIViewController {
         //TODO: wenn es zu klein ist geht es drüber hinweg
         
         if withImageView {
-            if headerViewTopConstraint.constant < 0 {
+            if headerViewTopConstraint.constant <= 0 {
                 headerViewTopConstraint.constant = 0
             } else {
-                headerViewTopConstraint.constant = self.view.frame.height - dynamicHeight + (y*(self.view.frame.height / dynamicHeight))
+               //bildschirmgröße 670
+                let distanceToTop = self.view.frame.height - contentViewHeightConstraint.constant//- dynamicHeight
+                let imageDistance = self.view.frame.height - imageHeight
+                
+                let distanceForMoving = self.view.frame.height - dynamicHeight - imageHeight // 100pixel
+                
+                let result = imageDistance / distanceForMoving
+                print("distanceToTop \(distanceToTop) y \(y) y * result \(y * result)")
+                    //y \(y) and result \(result)")
+                
+                
+
+                print("distanceToTop \(distanceToTop) + y \(y) * distanceToTop/imageHeight \(distanceToTop/imageHeight) ")
+                
+                
+                if distanceToTop < (imageHeight + (imageHeight / 2))  {
+                    headerViewTopConstraint.constant = distanceToTop + (((oldY * -1) + y)*2)
+                } else {
+                    oldY = y
+                    print("IN Y")
+                }
+                    //headerViewTopConstraint.constant =  distanceToTop - (imageHeight / (self.view.frame.height / contentViewHeightConstraint.constant))  //+ (y * (distanceToTop/imageHeight))
+                //headerViewTopConstraint.constant =  distanceToTop + y * result  //abstand nach oben
             }
         }
     }
@@ -262,8 +285,6 @@ class AnimatorViewController: UIViewController {
         
        
         UIView.animate(withDuration: 0.3, animations: {
-            
-//        UIView.animate(withDuration: 0.3, animations: {
             self.view.layoutIfNeeded()
         }) { (_) in
            
@@ -276,7 +297,8 @@ class AnimatorViewController: UIViewController {
     
     
     private func animateUpImageIsVisible() {
-        contentViewHeightConstraint.constant = self.view.frame.height - dynamicHeight
+        //contentViewHeightConstraint.constant = self.view.frame.height - dynamicHeight
+        contentViewHeightConstraint.constant = self.view.frame.height - imageHeight
         animatorTableView.isScrollEnabled = false
         headerViewTopConstraint.constant = 0 //emptySpaceInScreen
         isUpWithImage = true

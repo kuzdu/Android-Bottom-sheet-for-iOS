@@ -22,8 +22,8 @@ class TestViewController: AnimatorViewController {
         self.contentBottomConstraint = customContentViewBottomConstraint
         self.contentViewHeightConstraint = customContentViewHeightConstraint
         self.animatorTableView = tableView
-        self.dynamicHeight = 80
-        self.imageHeight = 80
+        self.dynamicHeight = 100
+        self.imageHeight = 300
         initTableView()
     }
     
